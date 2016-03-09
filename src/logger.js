@@ -1,21 +1,15 @@
 (function() {
   'use strict';
 
-  module.exports = {
-    init: init,
-    output: output
-  };
+  var dom;
 
-  var doc;
-
-  function init(docu) {
-    doc = docu;
-    doc.body.className += ' logger';
+  function init(doc) {
+    dom = doc;
   }
 
-  function output() {
+  function log() {
     _forEachArg(arguments, function(arg) {
-      doc.write(_logRow(arg));
+      dom.write(_logRow(arg));
     });
   }
 
@@ -27,7 +21,7 @@
       output = JSON.stringify(data);
     }
 
-    return '<div class="log-row">' + output + '</div>';
+    return '<div class="logger-row">' + output + '</div>';
   }
 
   function _forEachArg(args, iteratee) {
@@ -36,4 +30,17 @@
       iteratee(arg);
     }
   }
+
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = {
+      init: init,
+      output: log
+    };
+  } else {
+    window.logger = {
+      init: init,
+      log: log
+    };
+  }
+
 }());
